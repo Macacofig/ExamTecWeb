@@ -1,4 +1,5 @@
-import { useState } from 'react';
+'use client'; 
+
 import styles from './SearchBar.module.scss';
 
 interface SearchBarProps {
@@ -6,25 +7,20 @@ interface SearchBarProps {
 }
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
-    const [query, setQuery] = useState('');
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onSearch(query);
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const valor = e.target.value;
+        onSearch(valor);
     };
 
     return (
-        <form className={styles.searchForm} onSubmit={handleSubmit}>
+        <div className={styles.searchForm}>
             <input
                 type="text"
                 className={styles.input}
                 placeholder="Buscar por título, autor o palabra clave..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={handleChange}
             />
-            <button type="submit" className={styles.button}>
-                Buscar
-            </button>
-        </form>
+            {}
+        </div>
     );
 }
