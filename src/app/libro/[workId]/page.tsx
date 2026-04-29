@@ -1,22 +1,20 @@
 type Props = {
-  params: { workId: string };
+  params: Promise<{ workId: string }>;
 };
 
 export default async function LibroDetalle({ params }: Props) {
+  const { workId } = await params;
+
   const res = await fetch(
-    `https://openlibrary.org/works/${params.workId}.json`
+    `https://openlibrary.org/works/${workId}.json`
   );
 
   const data = await res.json();
 
   return (
-    <div className="container">
+    <div>
       <h1>{data.title}</h1>
-
-      <p>
-        <strong>Descripción:</strong>{" "}
-        {data.description?.value || "Sin descripción"}
-      </p>
+      <p>{data.description?.value || "Sin descripción"}</p>
     </div>
   );
 }
