@@ -1,10 +1,17 @@
-import { bookDetail } from "@/types/bookdetail";
+import { bookDetail } from "@/types/bookDetail";
 
 export function mapToBookDetail(apiWork: any, workId: string): bookDetail {
-  const coverId = Array.isArray(apiWork.covers) ? apiWork.covers[0] : undefined;
+  const validCovers = Array.isArray(apiWork.covers)
+    ? apiWork.covers.filter((id: number) => id > 0)
+    : [];
+   
+  const coverId = validCovers.length > 0 ? validCovers[0] : undefined;
+  
   const coverUrl = coverId
     ? `https://covers.openlibrary.org/b/id/${coverId}-L.jpg`
-    : "https://via.placeholder.com/600x900?text=Sin+imagen";
+    : "/no-image.png";
+  
+  console.log("🖼️ [mapToBookDetail] coverUrl final:", coverUrl);
 
   const rawDescription = apiWork.description;
   const description = typeof rawDescription === "string"
