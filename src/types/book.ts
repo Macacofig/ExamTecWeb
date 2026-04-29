@@ -5,4 +5,5 @@ export type book = {
   autor: string;
   añoPrimeraPublicacion: number;
   numeroEdiciones: number;
+  workId: string;
 }

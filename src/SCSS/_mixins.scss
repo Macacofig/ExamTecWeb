@@ -1,0 +1,24 @@
+@use "variables" as *;
+
+@mixin flex-column($gap: 10px) {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
+
+@mixin card-hover {
+  transition: transform $transition, box-shadow $transition;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+}
+
+@mixin button-base {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
