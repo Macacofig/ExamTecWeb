@@ -1,7 +1,8 @@
+import { bookDetail } from "@/types/bookDetail";
 import { Result } from "@/types/Result";
 import { mapToBookDetail } from "@/utils/bookDetailMapper";
 
-export async function getBookDetails(workId: string): Promise<Result<any>> {
+export async function getBookDetails(workId: string): Promise<Result<bookDetail>> {
   const request = await fetch(`https://openlibrary.org/works/${workId}.json`);
 
   if (!request.ok) {
