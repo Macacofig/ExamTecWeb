@@ -14,27 +14,29 @@ export default function Home() {
   const [books, setBooks] = useState<book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("harry potter");
+  const [filters, setFilters] = useState<any>({});
 
   useEffect(() => {
-    searchBooks("harry potter").then((result: Result<any[]>) => {
-      if (result.isSuccess()) {;
+    setLoading(true);
+    searchBooks(searchQuery).then((result: Result<any[]>) => {
+      if (result.isSuccess()) {
         setBooks(result.getValue() || []);
       } else {
         setError(result.getError()?.message || "Error desconocido");
       }
       setLoading(false);
     });
-  }, []);
+  }, [searchQuery]); 
 
-  if (loading) return <p>Cargando...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <Loading />;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <div className="container">
       <h1 className="header">Biblioteca</h1>
-      <SearchBar onSearch={(q) => console.log(q)} />
-      <ErrorMessage message="Error de prueba" />
-      <FilterPanel onFilterChange={(f) => console.log(f)} />
+      <SearchBar onSearch={setSearchQuery} />
+      <FilterPanel onFilterChange={(newFilters) => setFilters({ ...filters, ...newFilters })} />
       <BookList books={books} />
     </div>
   );

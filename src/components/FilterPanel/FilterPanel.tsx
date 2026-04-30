@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import styles from './FilterPanel.module.scss';
 
 interface FilterPanelProps {
@@ -7,11 +8,23 @@ interface FilterPanelProps {
 }
 
 export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
+    const [year, setYear] = useState('1900');
+
+    const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setYear(value);
+        onFilterChange({ minYear: value });
+    };
+
     return (
         <div className={styles.filterPanel}>
             <div className={styles.filterGroup}>
                 <label>Año mínimo</label>
-                <input type="number" value="1900" />
+                <input 
+                    type="number" 
+                    value={year} 
+                    onChange={handleYearChange}
+                />
             </div>
 
             <div className={styles.filterGroup}>
