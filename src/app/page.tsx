@@ -4,7 +4,7 @@ import { Result } from "@/types/Result";
 import { useEffect, useState } from "react";
 import BookList from "@/components/ListBooks";
 import { book } from "@/types/book";
-import { searchBooks } from "@/services/openLibraryService";
+import { searchBooks, advancedSearch } from "@/services/openLibraryService";
 import SearchBar from "@/components/SearchBar/SearchBar";
 import Loading from "@/components/Loading/Loading";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
@@ -32,7 +32,14 @@ export default function Home() {
     
     const queryToSearch = debouncedQuery.trim() === "" ? "programming" : debouncedQuery;
 
-    searchBooks(queryToSearch).then((result: Result<any[]>) => {
+    const searchParams = {
+      query: queryToSearch,
+      language: filters.language,
+      minYear: filters.minYear ? parseInt(filters.minYear) : undefined,
+      orderBy: filters.sort,
+    };
+
+    advancedSearch(searchParams).then((result: Result<any[]>) => {
       if (result.isSuccess()) {
         setBooks(result.getValue() || []);
       } else {
@@ -41,7 +48,7 @@ export default function Home() {
       
       setLoading(false);
     });
-  }, [debouncedQuery]);
+  }, [debouncedQuery, filters]);
 
   return (
     <div className="container">

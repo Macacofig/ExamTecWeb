@@ -1,5 +1,4 @@
 import { getBookDetails } from "@/services/worksOpenLibraryService";
-import { mapToBookDetail } from "@/utils/bookDetailMapper";
 import BookDetail from "@/components/BookDetail/BookDetail";
 
 type Props = {

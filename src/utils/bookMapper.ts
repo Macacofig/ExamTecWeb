@@ -4,7 +4,8 @@ export function mapToBooks(apiBooks: any[]): book[] {
   return apiBooks.map((item: any, index: number) => ({
     id: index,
     titulo: item.title || "Sin título",
-    autor: item.author_name?.[0] || "Desconocido",
+    autor: item.author_name?.[0] || "Sin información",
+    lenguajes: item.language || [],
     añoPrimeraPublicacion: item.first_publish_year || 0,
     numeroEdiciones: item.edition_count || 0,
     workId: item.key ? item.key.replace("/works/", "") : "",
