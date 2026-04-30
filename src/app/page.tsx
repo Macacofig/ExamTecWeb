@@ -14,29 +14,25 @@ export default function Home() {
   const [books, setBooks] = useState<book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("harry potter");
-  const [debouncedQuery, setDebouncedQuery] = useState("harry potter");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [filters, setFilters] = useState<any>({});
 
   useEffect(() => {
-    console.log("DEBUG: searchQuery cambió a", searchQuery);
-    
     const timer = setTimeout(() => {
-      console.log("DEBUG: Set debouncedQuery a", searchQuery);
       setDebouncedQuery(searchQuery);
-    }, 500);
+    }, 800);
     
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
   useEffect(() => {
-    console.log("DEBUG: Disparando búsqueda para", debouncedQuery);
     setLoading(true);
     setError(null);
     
-    searchBooks(debouncedQuery).then((result: Result<any[]>) => {
-      console.log("DEBUG: Resultado de búsqueda", result);
-      
+    const queryToSearch = debouncedQuery.trim() === "" ? "programming" : debouncedQuery;
+
+    searchBooks(queryToSearch).then((result: Result<any[]>) => {
       if (result.isSuccess()) {
         setBooks(result.getValue() || []);
       } else {

@@ -4,36 +4,26 @@ import { mapToBooks } from "@/utils/bookMapper";
 
 export async function searchBooks(query: string): Promise<Result<book[]>> {
   try {
-    console.log("DEBUG API: Recibido query", query);
-    
     if (!query || !query.trim()) {
-      console.log("DEBUG API: Retornando array vacío por query vacío");
       return Result.success([]);
     }
 
     const formattedQuery = query.trim().replace(/\s+/g, '+');
-    const url = `https://openlibrary.org/search.json?q=${formattedQuery}`;
-    console.log("DEBUG API: Fetch URL", url);
-
-    const request = await fetch(url);
-    console.log("DEBUG API: HTTP Status", request.status);
+    const request = await fetch(`https://openlibrary.org/search.json?q=${formattedQuery}`);
 
     if (!request.ok) {
-      return Result.error(new Error(`Error de API: ${request.status}`));
+      return Result.error(new Error(`Error HTTP ${request.status}: No se pudo completar la búsqueda en Open Library`));
     }
 
     const data = await request.json();
-    console.log("DEBUG API: Data docs recibidos", data.docs?.length);
-
+    
     if (!data.docs) {
-      return Result.error(new Error("Estructura de respuesta inválida"));
+      return Result.error(new Error("Error de datos: Estructura de respuesta inválida"));
     }
 
-    const mappedData = mapToBooks(data.docs);
-    return Result.success(mappedData);
+    return Result.success(mapToBooks(data.docs));
   } catch (error: any) {
-    console.log("DEBUG API: Catch ejecutado", error.message);
-    return Result.error(new Error(error.message || "Error de red"));
+    return Result.error(new Error(`Fallo de conexión: ${error.message}`));
   }
 }
 
@@ -45,16 +35,15 @@ export async function searchBooksTitle(title: string): Promise<Result<book[]>> {
 
     const formattedTitle = title.trim().replace(/\s+/g, '+');
     const request = await fetch(`https://openlibrary.org/search.json?title=${formattedTitle}`);
-    
+
     if (!request.ok) {
-      return Result.error(new Error(`Error de API: ${request.status}`));
+      return Result.error(new Error(`Error HTTP ${request.status}: No se pudo completar la búsqueda por título`));
     }
 
     const data = await request.json();
-    const mappedData = mapToBooks(data.docs);
-    return Result.success(mappedData);
+    return Result.success(mapToBooks(data.docs));
   } catch (error: any) {
-    return Result.error(new Error(error.message || "Error de red"));
+    return Result.error(new Error(`Fallo de conexión: ${error.message}`));
   }
 }
 
@@ -66,15 +55,14 @@ export async function searchBooksAuthor(author: string): Promise<Result<book[]>>
 
     const formattedAuthor = author.trim().replace(/\s+/g, '+');
     const request = await fetch(`https://openlibrary.org/search.json?author=${formattedAuthor}`);
-    
+
     if (!request.ok) {
-      return Result.error(new Error(`Error de API: ${request.status}`));
+      return Result.error(new Error(`Error HTTP ${request.status}: No se pudo completar la búsqueda por autor`));
     }
 
     const data = await request.json();
-    const mappedData = mapToBooks(data.docs);
-    return Result.success(mappedData);
+    return Result.success(mapToBooks(data.docs));
   } catch (error: any) {
-    return Result.error(new Error(error.message || "Error de red"));
+    return Result.error(new Error(`Fallo de conexión: ${error.message}`));
   }
 }
