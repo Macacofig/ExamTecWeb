@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import BookList from "@/components/ListBooks";
 import { book } from "@/types/book";
 import { searchBooks } from "@/services/openLibraryService";
+import SearchBar from "@/components/SearchBar/SearchBar";
+import Loading from "@/components/Loading/Loading";
+import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 
 export default function Home() {
   const [books, setBooks] = useState<book[]>([]);
@@ -28,7 +31,8 @@ export default function Home() {
   return (
     <div className="container">
       <h1 className="header">Biblioteca</h1>
-
+      <SearchBar onSearch={(q) => console.log(q)} />
+      <ErrorMessage message="Error de prueba" />
       <BookList books={books} />
     </div>
   );
