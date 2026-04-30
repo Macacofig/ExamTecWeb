@@ -2,14 +2,25 @@
 import styles from "./BookCard.module.scss";
 import { book } from "@/types/book";
 import { useRouter } from "next/navigation";
+import { toggleFavorite, isFavorite } from "@/utils/localStorageFavorites";
+import { useState, useEffect } from "react";
 
 type BookProps = {
   book: book;
+  onRemove?: (book: book) => void;
 };
 
-export default function BookCard({ book }: BookProps) {
+export default function BookCard({ book, onRemove }: BookProps) {
   const router = useRouter();
-
+  const [favorite, setFavorite] = useState(false);
+  const handleFavorite = () => {
+    toggleFavorite(book);
+    setFavorite(!favorite);
+  };
+  useEffect(() => {
+    setFavorite(isFavorite(book.workId));
+  }, [book.workId]);
+  
   return (
     <div className={styles.card}>
       <img src={book.portada} alt={book.titulo} />
@@ -31,8 +42,16 @@ export default function BookCard({ book }: BookProps) {
             Ver detalle
           </button>
 
-          <button onClick={() => console.log("favorito")}>
-            Favorito
+          <button
+            onClick={() => {
+              if (onRemove) {
+                onRemove(book);
+              } else {
+                handleFavorite();
+              }
+            }}
+          >
+            {onRemove ? "Eliminar" : favorite ? "Quitar Favorito" : "Añadir Favorito"}
           </button>
         </div>
       </div>

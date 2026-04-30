@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { bookDetail } from "@/types/bookDetail";
 import styles from "./BookDetail.module.scss";
+import { isFavorite as checkFavorite, toggleFavorite } from "@/utils/localStorageFavorites";
+import { useEffect } from "react";
+import { mapDetailToBook } from "@/utils/bookDetailBookMapper";
 
 type Props = {
   detail: bookDetail;
@@ -12,13 +15,18 @@ type Props = {
 export default function BookDetail({ detail }: Props) {
   const router = useRouter();
   const [isFavorite, setIsFavorite] = useState(false);
+  const mappedBook = mapDetailToBook(detail);
+  useEffect(() => {
+    setIsFavorite(checkFavorite(detail.workId));
+  }, [detail.workId]);
 
   const handleGoBack = () => {
     router.back();
   };
 
   const handleToggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+    toggleFavorite(mappedBook);
+    setIsFavorite(checkFavorite(detail.workId));
   };
 
   return (

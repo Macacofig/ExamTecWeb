@@ -2,7 +2,7 @@
 
 import { Result } from "@/types/Result";
 import { useEffect, useState } from "react";
-import BookList from "@/components/ListBooks";
+import BookList from "@/components/ListBooks/ListBooks";
 import { book } from "@/types/book";
 import { searchBooks } from "@/services/openLibraryService";
 import SearchBar from "@/components/SearchBar/SearchBar";
