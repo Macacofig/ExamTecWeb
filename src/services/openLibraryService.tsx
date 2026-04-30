@@ -1,47 +1,80 @@
 import { Result } from "@/types/Result";
 import { book } from "@/types/book";
-import { mapToBooks }from "@/utils/bookMapper";
+import { mapToBooks } from "@/utils/bookMapper";
 
 export async function searchBooks(query: string): Promise<Result<book[]>> {
-  const request = await fetch(
-    `https://openlibrary.org/search.json?q=${query}`
-  );
+  try {
+    console.log("DEBUG API: Recibido query", query);
+    
+    if (!query || !query.trim()) {
+      console.log("DEBUG API: Retornando array vacío por query vacío");
+      return Result.success([]);
+    }
 
-  if (!request.ok) {
-    return Result.error(new Error("Error al buscar libros", { cause: request.status }));
+    const formattedQuery = query.trim().replace(/\s+/g, '+');
+    const url = `https://openlibrary.org/search.json?q=${formattedQuery}`;
+    console.log("DEBUG API: Fetch URL", url);
+
+    const request = await fetch(url);
+    console.log("DEBUG API: HTTP Status", request.status);
+
+    if (!request.ok) {
+      return Result.error(new Error(`Error de API: ${request.status}`));
+    }
+
+    const data = await request.json();
+    console.log("DEBUG API: Data docs recibidos", data.docs?.length);
+
+    if (!data.docs) {
+      return Result.error(new Error("Estructura de respuesta inválida"));
+    }
+
+    const mappedData = mapToBooks(data.docs);
+    return Result.success(mappedData);
+  } catch (error: any) {
+    console.log("DEBUG API: Catch ejecutado", error.message);
+    return Result.error(new Error(error.message || "Error de red"));
   }
-  
-  let data = await request.json();
-  data = mapToBooks(data.docs);
-  return Result.success(data);
 }
 
 export async function searchBooksTitle(title: string): Promise<Result<book[]>> {
-  // TODO: ver si el mapper de api a book se puede reutilizar o es necesario crear uno específico para esta función
-  const request = await fetch(
-    `https://openlibrary.org/search.json?title=${title}`
-  );
+  try {
+    if (!title || !title.trim()) {
+      return Result.success([]);
+    }
 
-  if (!request.ok) {
-    return Result.error(new Error("Error al buscar libros por título", { cause: request.status }));
+    const formattedTitle = title.trim().replace(/\s+/g, '+');
+    const request = await fetch(`https://openlibrary.org/search.json?title=${formattedTitle}`);
+    
+    if (!request.ok) {
+      return Result.error(new Error(`Error de API: ${request.status}`));
+    }
+
+    const data = await request.json();
+    const mappedData = mapToBooks(data.docs);
+    return Result.success(mappedData);
+  } catch (error: any) {
+    return Result.error(new Error(error.message || "Error de red"));
   }
-
-  let data = await request.json();
-  data = mapToBooks(data.docs);
-  return Result.success(data);
 }
 
 export async function searchBooksAuthor(author: string): Promise<Result<book[]>> {
-  // TODO: ver si el mapper de api a book se puede reutilizar o es necesario crear uno específico para esta función
-  const request = await fetch(
-    `https://openlibrary.org/search.json?author=${author}`
-  );
+  try {
+    if (!author || !author.trim()) {
+      return Result.success([]);
+    }
 
-  if (!request.ok) {
-    return Result.error(new Error("Error al buscar libros por autor", { cause: request.status }));
+    const formattedAuthor = author.trim().replace(/\s+/g, '+');
+    const request = await fetch(`https://openlibrary.org/search.json?author=${formattedAuthor}`);
+    
+    if (!request.ok) {
+      return Result.error(new Error(`Error de API: ${request.status}`));
+    }
+
+    const data = await request.json();
+    const mappedData = mapToBooks(data.docs);
+    return Result.success(mappedData);
+  } catch (error: any) {
+    return Result.error(new Error(error.message || "Error de red"));
   }
-
-  let data = await request.json();
-  data = mapToBooks(data.docs);
-  return Result.success(data);
 }

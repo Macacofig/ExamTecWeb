@@ -15,29 +15,47 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("harry potter");
+  const [debouncedQuery, setDebouncedQuery] = useState("harry potter");
   const [filters, setFilters] = useState<any>({});
 
   useEffect(() => {
+    console.log("DEBUG: searchQuery cambió a", searchQuery);
+    
+    const timer = setTimeout(() => {
+      console.log("DEBUG: Set debouncedQuery a", searchQuery);
+      setDebouncedQuery(searchQuery);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    console.log("DEBUG: Disparando búsqueda para", debouncedQuery);
     setLoading(true);
-    searchBooks(searchQuery).then((result: Result<any[]>) => {
+    setError(null);
+    
+    searchBooks(debouncedQuery).then((result: Result<any[]>) => {
+      console.log("DEBUG: Resultado de búsqueda", result);
+      
       if (result.isSuccess()) {
         setBooks(result.getValue() || []);
       } else {
         setError(result.getError()?.message || "Error desconocido");
       }
+      
       setLoading(false);
     });
-  }, [searchQuery]); 
-
-  if (loading) return <Loading />;
-  if (error) return <ErrorMessage message={error} />;
+  }, [debouncedQuery]);
 
   return (
     <div className="container">
       <h1 className="header">Biblioteca</h1>
       <SearchBar onSearch={setSearchQuery} />
       <FilterPanel onFilterChange={(newFilters) => setFilters({ ...filters, ...newFilters })} />
-      <BookList books={books} />
+      
+      {loading && <Loading />}
+      {!loading && error && <ErrorMessage message={error} />}
+      {!loading && !error && <BookList books={books} />}
     </div>
   );
 }
