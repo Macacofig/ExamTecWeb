@@ -8,6 +8,7 @@ import { searchBooks } from "@/services/openLibraryService";
 import SearchBar from "@/components/SearchBar/SearchBar";
 import Loading from "@/components/Loading/Loading";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
+import FilterPanel from "@/components/FilterPanel/FilterPanel";
 
 export default function Home() {
   const [books, setBooks] = useState<book[]>([]);
@@ -33,6 +34,7 @@ export default function Home() {
       <h1 className="header">Biblioteca</h1>
       <SearchBar onSearch={(q) => console.log(q)} />
       <ErrorMessage message="Error de prueba" />
+      <FilterPanel onFilterChange={(f) => console.log(f)} />
       <BookList books={books} />
     </div>
   );
