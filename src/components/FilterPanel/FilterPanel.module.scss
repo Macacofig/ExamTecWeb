@@ -1,0 +1,35 @@
+.filterPanel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    background-color: var(--card-bg, #1f2028);
+    border-radius: 8px;
+    border: 1px solid var(--border-color, #2e303a);
+}
+
+.filterGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: var(--text-muted, #9ca3af);
+    }
+
+    select, input {
+        padding: 0.5rem;
+        border-radius: 6px;
+        border: 1px solid var(--border-color, #2e303a);
+        background-color: var(--bg-dark, #16171d);
+        color: var(--text-main, #f3f4f6);
+        outline: none;
+
+        &:focus {
+            border-color: var(--accent, #aa3bff);
+        }
+    }
+}
