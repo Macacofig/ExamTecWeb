@@ -27,6 +27,9 @@ export default function Navbar() {
       </div>
       <ul className={styles.navLinks}>
         <li>
+          <Link href="/">Pagina Principal</Link>
+        </li>
+        <li>
           <Link href="/buscar">Buscar</Link>
         </li>
         <li>
