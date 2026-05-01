@@ -7,7 +7,6 @@ export async function GET(req: NextRequest) {
   const title = searchParams.get("title") || "";
   const author = searchParams.get("author") || "";
   const language = searchParams.get("lang") || "";
-  const minYear = searchParams.get("first_publish_year") || "";
   const page = searchParams.get("page") || "1";
   const sort = searchParams.get("sort") || "";
 
@@ -17,7 +16,6 @@ export async function GET(req: NextRequest) {
   if (title) openLibraryParams.append("title", title);
   if (author) openLibraryParams.append("author", author);
   if (language) openLibraryParams.append("lang", language);
-  if (minYear) openLibraryParams.append("first_publish_year", minYear);
   if (page) openLibraryParams.append("page", page);
   if (sort) openLibraryParams.append("sort", sort);
 

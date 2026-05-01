@@ -1,6 +1,7 @@
 import { Result } from "@/types/Result";
 import { book } from "@/types/book";
 import { mapToBooks } from "@/utils/bookMapper";
+import { filterByPublicationYear } from "@/utils/filters";
 
 type SearchParams = {
   query?: string;
@@ -13,6 +14,7 @@ type AdvancedSearchParams = SearchParams & {
   language?: string;
   orderBy?: string;
   minYear?: number;
+  maxYear?: number;
 };
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -37,12 +39,11 @@ function buildSearchURL(params: SearchParams): string {
 function buildAdvancedSearchURL(params: AdvancedSearchParams): string {
   const sp = new URLSearchParams();
 
-  if (params.query)    sp.append("q",                   params.query);
-  if (params.title)    sp.append("title",               params.title);
-  if (params.author)   sp.append("author",              params.author);
-  if (params.language) sp.append("lang",                params.language);
-  if (params.minYear)  sp.append("first_publish_year",  params.minYear.toString());
-  if (params.page)     sp.append("page",                params.page.toString());
+  if (params.query)    sp.append("q",      params.query);
+  if (params.title)    sp.append("title",  params.title);
+  if (params.author)   sp.append("author", params.author);
+  if (params.language) sp.append("lang",   params.language);
+  if (params.page)     sp.append("page",   params.page.toString());
   if (params.orderBy) {
     sp.append("sort", params.orderBy === "year" ? "first_publish_year" : "editions");
   }
@@ -90,5 +91,16 @@ export async function searchBooks(params: SearchParams): Promise<Result<book[]>>
 
 export async function advancedSearch(params: AdvancedSearchParams): Promise<Result<book[]>> {
   if (!hasAnyValue(params)) return Result.success([]);
-  return fetchBooks(buildAdvancedSearchURL(params));
+
+  const result = await fetchBooks(buildAdvancedSearchURL(params));
+  if (!result.isSuccess()) return result;
+
+  let books = result.getValue() || [];
+  if (params.minYear !== undefined || params.maxYear !== undefined) {
+    const minYear = params.minYear ?? 0;
+    const maxYear = params.maxYear ?? new Date().getFullYear();
+    books = filterByPublicationYear(books, minYear, maxYear);
+  }
+
+  return Result.success(books);
 }

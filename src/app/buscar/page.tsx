@@ -13,6 +13,7 @@ import styles from "./page.module.scss";
 type AdvancedFilters = {
   language?: string;
   minYear?: string;
+  maxYear?: string;
   sort?: string;
 };
 
@@ -26,7 +27,7 @@ export default function BuscarPage() {
   const [query, setQuery] = useState("");
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
-  const [filters, setFilters] = useState<AdvancedFilters>({ language: "", minYear: "", sort: "editions" });
+  const [filters, setFilters] = useState<AdvancedFilters>({ language: "", minYear: "", maxYear: "", sort: "editions" });
   const [books, setBooks] = useState<book[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +57,7 @@ export default function BuscarPage() {
         author: author.trim() || undefined,
         language: filters.language ? languageMap[filters.language] : undefined,
         minYear: filters.minYear ? Number(filters.minYear) : undefined,
+        maxYear: filters.maxYear ? Number(filters.maxYear) : undefined,
         orderBy: filters.sort,
       };
 

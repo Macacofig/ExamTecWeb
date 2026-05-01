@@ -1,6 +1,5 @@
 "use client";
 
-import { Result } from "@/types/Result";
 import { useEffect, useState } from "react";
 import BookList from "@/components/ListBooks/ListBooks";
 import { book } from "@/types/book";
@@ -13,6 +12,7 @@ import FilterPanel from "@/components/FilterPanel/FilterPanel";
 type Filters = {
   language?: string;
   minYear?: string;
+  maxYear?: string;
   sort?: string;
 };
 
@@ -20,7 +20,7 @@ export default function Home() {
   const [books, setBooks] = useState<book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<Filters>({ language: "", minYear: "", sort: "editions" });
+  const [filters, setFilters] = useState<Filters>({ language: "", minYear: "", maxYear: "", sort: "editions" });
   const [page, setPage] = useState(1);
   
   useEffect(() => {
@@ -34,6 +34,7 @@ export default function Home() {
           page,
           language: filters.language,
           minYear: filters.minYear ? Number(filters.minYear) : undefined,
+          maxYear: filters.maxYear ? Number(filters.maxYear) : undefined,
           orderBy: filters.sort
         });
 

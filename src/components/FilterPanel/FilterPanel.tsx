@@ -8,12 +8,19 @@ interface FilterPanelProps {
 }
 
 export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
-    const [year, setYear] = useState('');
+    const [minYear, setMinYear] = useState('');
+    const [maxYear, setMaxYear] = useState('');
 
-    const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleMinYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setYear(value);
+        setMinYear(value);
         onFilterChange({ minYear: value || undefined });
+    };
+
+    const handleMaxYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setMaxYear(value);
+        onFilterChange({ maxYear: value || undefined });
     };
 
     return (
@@ -22,8 +29,17 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
                 <label>Año mínimo</label>
                 <input 
                     type="number" 
-                    value={year} 
-                    onChange={handleYearChange}
+                    value={minYear} 
+                    onChange={handleMinYearChange}
+                />
+            </div>
+
+            <div className={styles.filterGroup}>
+                <label>Año máximo</label>
+                <input 
+                    type="number" 
+                    value={maxYear} 
+                    onChange={handleMaxYearChange}
                 />
             </div>
 
