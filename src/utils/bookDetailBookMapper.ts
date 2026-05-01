@@ -7,6 +7,7 @@ export function mapDetailToBook(detail: bookDetail): book {
     titulo: detail.title,
     portada: detail.coverUrl,
     autor: detail.authors?.[0] || "Desconocido",
+    lenguajes: [],
     añoPrimeraPublicacion: Number(detail.publishDate) || 0,
     numeroEdiciones: 0,
     workId: detail.workId

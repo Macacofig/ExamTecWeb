@@ -13,26 +13,32 @@ import styles from "./page.module.scss";
 type AdvancedFilters = {
   language?: string;
   minYear?: string;
+  maxYear?: string;
   sort?: string;
 };
 
 const languageMap: Record<string, string> = {
-  eng: "en",
-  spa: "es",
-  fre: "fr",
+  eng: "eng",
+  spa: "spa",
+  fra: "fra",
 };
 
 export default function BuscarPage() {
   const [query, setQuery] = useState("");
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
-  const [filters, setFilters] = useState<AdvancedFilters>({ language: "", minYear: "", sort: "editions" });
+  const [filters, setFilters] = useState<AdvancedFilters>({ language: "", minYear: "", maxYear: "", sort: "editions" });
+  const [tempFilters, setTempFilters] = useState<AdvancedFilters>({ language: "", minYear: "", maxYear: "", sort: "editions" });
   const [books, setBooks] = useState<book[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [advancedMode, setAdvancedMode] = useState(false);
   const formType: SearchFormType = advancedMode ? "advanced" : "simple";
+
+  const applyFilters = () => {
+    setFilters(tempFilters);
+  };
 
   const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -56,6 +62,7 @@ export default function BuscarPage() {
         author: author.trim() || undefined,
         language: filters.language ? languageMap[filters.language] : undefined,
         minYear: filters.minYear ? Number(filters.minYear) : undefined,
+        maxYear: filters.maxYear ? Number(filters.maxYear) : undefined,
         orderBy: filters.sort,
       };
 
@@ -104,7 +111,11 @@ export default function BuscarPage() {
 
             {advancedMode && (
               <div style={{ marginTop: 16 }}>
-                <FilterPanel onFilterChange={(newFilters) => setFilters({ ...filters, ...newFilters })} />
+                <FilterPanel 
+                  onFilterChange={(newFilters) => setTempFilters({ ...tempFilters, ...newFilters })} 
+                  showApplyButton={true}
+                  onApply={applyFilters}
+                />
               </div>
             )}
           </form>
@@ -113,7 +124,15 @@ export default function BuscarPage() {
         <div className={styles.resultsSection}>
           {loading && <Loading />}
           {!loading && error && <ErrorMessage message={error} />}
-          {!loading && !error && hasSearched && <BookList books={books} />}
+          {!loading && !error && hasSearched && (
+            books.length === 0 ? (
+              <p style={{ textAlign: 'center', margin: '2rem 0', color: 'var(--text-muted)' }}>
+                No se encontraron libros que coincidan con tu búsqueda.
+              </p>
+            ) : (
+              <BookList books={books} />
+            )
+          )}
         </div>
       </div>
     </div>

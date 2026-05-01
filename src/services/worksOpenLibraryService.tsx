@@ -9,7 +9,7 @@ export async function getBookDetails(workId: string): Promise<Result<bookDetail>
     return Result.error(new Error("HTTP Error:", { cause: request.status }));
   }
 
-  let data = await request.json();
-  data = mapToBookDetail(data, workId);
-  return Result.success(data);
+  const data = await request.json();
+  const detail = await mapToBookDetail(data, workId);
+  return Result.success(detail);
 }
