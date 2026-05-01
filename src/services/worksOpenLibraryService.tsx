@@ -6,7 +6,7 @@ export async function getBookDetails(workId: string): Promise<Result<bookDetail>
   const request = await fetch(`https://openlibrary.org/works/${workId}.json`);
 
   if (!request.ok) {
-    return Result.error(new Error("Error al obtener libro", { cause: request.status }));
+    return Result.error(new Error("HTTP Error:", { cause: request.status }));
   }
 
   let data = await request.json();
