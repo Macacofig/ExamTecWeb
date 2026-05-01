@@ -13,20 +13,22 @@
 
 .fieldGroup label {
   font-weight: 500;
-  color: #333;
+  color: var(--text-main);
 }
 
 .fieldGroup input {
   padding: 8px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 14px;
+  background-color: var(--card-bg);
+  color: var(--text-main);
   transition: border-color 0.2s ease;
 
   &:focus {
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);
   }
 }
 
@@ -34,7 +36,7 @@
   display: grid;
   gap: 12px;
   padding: 16px;
-  background-color: #f8f9fa;
+  background-color: var(--card-bg);
   border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--border-color);
 }
