@@ -5,12 +5,30 @@
   padding: 1rem 2rem;
   background-color: var(--bg-main);
   border-bottom: 1px solid var(--border-color);
+  flex-wrap: wrap;
 
   .logo a {
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--accent);
     text-decoration: none;
+  }
+
+  .menuButton {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+
+    span {
+      width: 25px;
+      height: 3px;
+      background-color: var(--text-main);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
   }
 
   .navLinks {
@@ -49,14 +67,22 @@
   }
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 1rem;
     padding: 1rem;
 
+    .menuButton {
+      display: flex;
+    }
+
     .navLinks {
+      display: none;
       width: 100%;
-      justify-content: space-around;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 1rem;
+      padding-top: 1rem;
+
+      &.isOpen {
+        display: flex;
+      }
     }
   }
 }
