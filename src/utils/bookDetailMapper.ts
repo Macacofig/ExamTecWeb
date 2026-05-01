@@ -11,8 +11,6 @@ export function mapToBookDetail(apiWork: any, workId: string): bookDetail {
     ? `https://covers.openlibrary.org/b/id/${coverId}-L.jpg`
     : "/no-image.png";
   
-  console.log("🖼️ [mapToBookDetail] coverUrl final:", coverUrl);
-
   const rawDescription = apiWork.description;
   const description = typeof rawDescription === "string"
     ? rawDescription
