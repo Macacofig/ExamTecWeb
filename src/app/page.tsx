@@ -5,9 +5,10 @@ import { useEffect, useState } from "react";
 import BookList from "@/components/ListBooks/ListBooks";
 import { book } from "@/types/book";
 import { advancedSearch } from "@/services/openLibraryService";
+import Loading from "@/components/Loading/Loading";
+import Skeleton from "@/components/Skeleton/Skeleton";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import FilterPanel from "@/components/FilterPanel/FilterPanel";
-import Skeleton from "@/components/Skeleton/Skeleton";
 
 type Filters = {
   language?: string;
@@ -23,24 +24,32 @@ export default function Home() {
   const [page, setPage] = useState(1);
   
   useEffect(() => {
-    setLoading(true);
-    setError(null);
+    const loadBooks = async () => {
+      setLoading(true);
+      setError(null);
 
-    advancedSearch({
-      query: "programming",
-      page,
-      language: filters.language,
-      minYear: filters.minYear ? Number(filters.minYear) : undefined,
-      orderBy: filters.sort
-    }).then((result: Result<book[]>) => {
-      if (result.isSuccess()) {
-        const initialBooks = result.getValue() || [];
-        setBooks(initialBooks);
-      } else {
-        setError(result.getError()?.message || "Error desconocido");
+      try {
+        const result = await advancedSearch({
+          query: "programming",
+          page,
+          language: filters.language,
+          minYear: filters.minYear ? Number(filters.minYear) : undefined,
+          orderBy: filters.sort
+        });
+
+        if (result.isSuccess()) {
+          setBooks(result.getValue() || []);
+        } else {
+          setError(result.getError()?.message || "Error desconocido");
+        }
+      } catch (error) {
+        setError(error instanceof Error ? error.message : "Error desconocido");
       }
+
       setLoading(false);
-    });
+    };
+
+    loadBooks();
   }, [page, filters]);
 
   useEffect(() => {
@@ -54,9 +63,14 @@ export default function Home() {
 
   return (
     <div className="container">
-      <FilterPanel onFilterChange={(newFilters) => setFilters({ ...filters, ...newFilters })} />
+      <FilterPanel onFilterChange={(newFilters: Partial<Filters>) => setFilters({ ...filters, ...newFilters })} />
 
-      {loading && <Skeleton />}
+      {loading && (
+        <>
+          <Loading />
+          <Skeleton />
+        </>
+      )}
       {!loading && error && <ErrorMessage message={error} />}
       {!loading && !error && (
         <>

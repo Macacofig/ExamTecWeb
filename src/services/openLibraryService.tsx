@@ -6,7 +6,7 @@ type SearchParams = {
   query?: string;
   title?: string;
   author?: string;
-  page?: number; 
+  page?: number;
 };
 
 type AdvancedSearchParams = SearchParams & {
@@ -15,103 +15,80 @@ type AdvancedSearchParams = SearchParams & {
   minYear?: number;
 };
 
+// ── Helpers ────────────────────────────────────────────────────────────────
+
+function hasAnyValue(params: object): boolean {
+  return Object.values(params).some(v =>
+    typeof v === "string" ? v.trim() : Boolean(v)
+  );
+}
+
 function buildSearchURL(params: SearchParams): string {
-  const searchParams = new URLSearchParams();
+  const sp = new URLSearchParams();
 
-  if (params.query) searchParams.append("q", params.query);
-  if (params.title) searchParams.append("title", params.title);
-  if (params.author) searchParams.append("author", params.author);
-  if (params.page) searchParams.append("page", params.page.toString());
+  if (params.query)  sp.append("q",      params.query);
+  if (params.title)  sp.append("title",  params.title);
+  if (params.author) sp.append("author", params.author);
+  if (params.page)   sp.append("page",   params.page.toString());
 
-  return `https://openlibrary.org/search.json?${searchParams.toString()}`;
+  return `/api/openlibrary/books?${sp.toString()}`;
 }
 
 function buildAdvancedSearchURL(params: AdvancedSearchParams): string {
-  const searchParams = new URLSearchParams();
+  const sp = new URLSearchParams();
 
-  if (params.query) searchParams.append("q", params.query);
-  if (params.title) searchParams.append("title", params.title);
-  if (params.author) searchParams.append("author", params.author);
-  if (params.language) searchParams.append("lang", params.language);
-  if (params.minYear) searchParams.append("first_publish_year", params.minYear.toString());
-  if (params.page) searchParams.append("page", params.page.toString());
+  if (params.query)    sp.append("q",                   params.query);
+  if (params.title)    sp.append("title",               params.title);
+  if (params.author)   sp.append("author",              params.author);
+  if (params.language) sp.append("lang",                params.language);
+  if (params.minYear)  sp.append("first_publish_year",  params.minYear.toString());
+  if (params.page)     sp.append("page",                params.page.toString());
   if (params.orderBy) {
-    // Open Library supports sorting by relevance, editions, etc.
-    // For simplicity, we'll use 'relevance' as default, but can add more
-    searchParams.append("sort", params.orderBy === 'year' ? 'first_publish_year' : 'editions');
+    sp.append("sort", params.orderBy === "year" ? "first_publish_year" : "editions");
   }
 
-  return `https://openlibrary.org/search.json?${searchParams.toString()}`;
+  return `/api/openlibrary/books?${sp.toString()}`;
 }
 
-export async function searchBooks(params: SearchParams): Promise<Result<book[]>> {
-  const hasParams = Object.values(params).some(
-    v => typeof v === "string" ? v.trim() : v
-  );
-
-  if (!hasParams) {
-    return Result.success([]);
-  }
-
-  const url = buildSearchURL(params);
-
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    return Result.error(
-      new Error(`Error HTTP: la API devolvio ${response.status} ${response.statusText}`)
-    );
-  }
-
-  let data: any;
+async function fetchBooks(url: string): Promise<Result<book[]>> {
   try {
-    data = await response.json();
-  } catch {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      return Result.error(
+        new Error(errorData.error ?? `Error HTTP: ${response.status} ${response.statusText}`)
+      );
+    }
+
+    const data = await response.json();
+
+    if (data.error) {
+      return Result.error(new Error(data.error));
+    }
+
+    if (!data || !Array.isArray(data.docs)) {
+      return Result.error(
+        new Error("JSON inválido: no existe la propiedad 'docs' o esta no es un array")
+      );
+    }
+
+    return Result.success(mapToBooks(data.docs));
+  } catch (error) {
     return Result.error(
-      new Error("JSON inválido: no se pudo parsear JSON recibido de la API")
+      new Error(`Error de red: ${error instanceof Error ? error.message : String(error)}`)
     );
   }
+}
 
-  if (!data || !Array.isArray(data.docs)) {
-    return Result.error(
-      new Error("JSON inválido: no existe la propiedad 'docs' o esta no es un array")
-    );
-  }
+// ── Exports ────────────────────────────────────────────────────────────────
 
-  return Result.success(mapToBooks(data.docs));
+export async function searchBooks(params: SearchParams): Promise<Result<book[]>> {
+  if (!hasAnyValue(params)) return Result.success([]);
+  return fetchBooks(buildSearchURL(params));
 }
 
 export async function advancedSearch(params: AdvancedSearchParams): Promise<Result<book[]>> {
-  const hasParams = Object.values(params).some(v => v && (typeof v === 'string' ? v.trim() : v));
-
-  if (!hasParams) {
-    return Result.success([]);
-  }
-
-  const url = buildAdvancedSearchURL(params);
-
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    return Result.error(
-      new Error(`Error HTTP: la API devolvio ${response.status} ${response.statusText}`)
-    );
-  }
-
-  let data: any;
-  try {
-    data = await response.json();
-  } catch {
-    return Result.error(
-      new Error("JSON inválido: no se pudo parsear JSON recibido de la API")
-    );
-  }
-
-  if (!data || !Array.isArray(data.docs)) {
-    return Result.error(
-      new Error("JSON inválido: no existe la propiedad 'docs' o esta no es un array")
-    );
-  }
-
-  return Result.success(mapToBooks(data.docs));
+  if (!hasAnyValue(params)) return Result.success([]);
+  return fetchBooks(buildAdvancedSearchURL(params));
 }
