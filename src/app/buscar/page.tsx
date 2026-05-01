@@ -18,9 +18,9 @@ type AdvancedFilters = {
 };
 
 const languageMap: Record<string, string> = {
-  eng: "en",
-  spa: "es",
-  fre: "fr",
+  eng: "eng",
+  spa: "spa",
+  fra: "fra",
 };
 
 export default function BuscarPage() {
@@ -28,12 +28,17 @@ export default function BuscarPage() {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [filters, setFilters] = useState<AdvancedFilters>({ language: "", minYear: "", maxYear: "", sort: "editions" });
+  const [tempFilters, setTempFilters] = useState<AdvancedFilters>({ language: "", minYear: "", maxYear: "", sort: "editions" });
   const [books, setBooks] = useState<book[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [advancedMode, setAdvancedMode] = useState(false);
   const formType: SearchFormType = advancedMode ? "advanced" : "simple";
+
+  const applyFilters = () => {
+    setFilters(tempFilters);
+  };
 
   const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -106,7 +111,11 @@ export default function BuscarPage() {
 
             {advancedMode && (
               <div style={{ marginTop: 16 }}>
-                <FilterPanel onFilterChange={(newFilters) => setFilters({ ...filters, ...newFilters })} />
+                <FilterPanel 
+                  onFilterChange={(newFilters) => setTempFilters({ ...tempFilters, ...newFilters })} 
+                  showApplyButton={true}
+                  onApply={applyFilters}
+                />
               </div>
             )}
           </form>
@@ -115,7 +124,15 @@ export default function BuscarPage() {
         <div className={styles.resultsSection}>
           {loading && <Loading />}
           {!loading && error && <ErrorMessage message={error} />}
-          {!loading && !error && hasSearched && <BookList books={books} />}
+          {!loading && !error && hasSearched && (
+            books.length === 0 ? (
+              <p style={{ textAlign: 'center', margin: '2rem 0', color: 'var(--text-muted)' }}>
+                No se encontraron libros que coincidan con tu búsqueda.
+              </p>
+            ) : (
+              <BookList books={books} />
+            )
+          )}
         </div>
       </div>
     </div>

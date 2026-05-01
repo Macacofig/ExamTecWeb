@@ -21,7 +21,12 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<Filters>({ language: "", minYear: "", maxYear: "", sort: "editions" });
+  const [tempFilters, setTempFilters] = useState<Filters>({ language: "", minYear: "", maxYear: "", sort: "editions" });
   const [page, setPage] = useState(1);
+  
+  const applyFilters = () => {
+    setFilters(tempFilters);
+  };
   
   useEffect(() => {
     const loadBooks = async () => {
@@ -64,7 +69,11 @@ export default function Home() {
 
   return (
     <div className="container">
-      <FilterPanel onFilterChange={(newFilters: Partial<Filters>) => setFilters({ ...filters, ...newFilters })} />
+      <FilterPanel 
+        onFilterChange={(newFilters: Partial<Filters>) => setTempFilters({ ...tempFilters, ...newFilters })} 
+        showApplyButton={true}
+        onApply={applyFilters}
+      />
 
       {loading && (
         <>
@@ -75,7 +84,13 @@ export default function Home() {
       {!loading && error && <ErrorMessage message={error} />}
       {!loading && !error && (
         <>
-          <BookList books={books} />
+          {books.length === 0 ? (
+            <p style={{ textAlign: 'center', margin: '2rem 0', color: 'var(--text-muted)' }}>
+              No se encontraron libros con los filtros aplicados.
+            </p>
+          ) : (
+            <BookList books={books} />
+          )}
 
           <div className="pagination">
             <button disabled={page === 1} onClick={() => setPage(page - 1)}>

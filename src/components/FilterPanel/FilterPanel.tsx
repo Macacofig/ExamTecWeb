@@ -5,9 +5,11 @@ import styles from './FilterPanel.module.scss';
 
 interface FilterPanelProps {
     onFilterChange: (filters: any) => void;
+    showApplyButton?: boolean;
+    onApply?: () => void;
 }
 
-export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
+export default function FilterPanel({ onFilterChange, showApplyButton = false, onApply }: FilterPanelProps) {
     const [minYear, setMinYear] = useState('');
     const [maxYear, setMaxYear] = useState('');
 
@@ -49,7 +51,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
                     <option value="">Todos</option>
                     <option value="eng">Inglés</option>
                     <option value="spa">Español</option>
-                    <option value="fre">Francés</option>
+                    <option value="fra">Francés</option>
                 </select>
             </div>
 
@@ -60,6 +62,14 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
                     <option value="year">Año de publicación</option>
                 </select>
             </div>
+
+            {showApplyButton && onApply && (
+                <div className={styles.filterGroup}>
+                    <button className={styles.applyButton} onClick={onApply}>
+                        Aplicar filtros
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

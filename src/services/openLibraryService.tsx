@@ -45,7 +45,7 @@ function buildAdvancedSearchURL(params: AdvancedSearchParams): string {
   if (params.language) sp.append("lang",   params.language);
   if (params.page)     sp.append("page",   params.page.toString());
   if (params.orderBy) {
-    sp.append("sort", params.orderBy === "year" ? "first_publish_year" : "editions");
+    sp.append("sort", params.orderBy === "year" ? "new" : "editions");
   }
 
   return `/api/openlibrary/books?${sp.toString()}`;
