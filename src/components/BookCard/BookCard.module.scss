@@ -2,7 +2,8 @@
 @use "../../SCSS/mixins" as *;
 
 .card {
-  background: $color-bg-card;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: $radius;
   box-shadow: $shadow-card;
   overflow: hidden;
@@ -23,18 +24,18 @@
 
   h3 {
     font-size: 16px;
-    color: $color-text;
+    color: var(--text-main);
   }
 
   p {
     font-size: 14px;
-    color: $color-muted;
+    color: var(--text-muted);
   }
 }
 
 .meta {
   font-size: 13px;
-  color: $color-muted;
+  color: var(--text-muted);
 }
 
 .actions {
@@ -44,13 +45,13 @@
 
   button {
     @include button-base;
-    background: $color-primary;
-    color: white;
+    background: var(--accent);
+    color: #ffffff;
 
     &:last-child {
       background: transparent;
-      color: $color-primary;
-      border: 1px solid $color-primary;
+      color: var(--accent);
+      border: 1px solid var(--accent);
     }
   }
 }

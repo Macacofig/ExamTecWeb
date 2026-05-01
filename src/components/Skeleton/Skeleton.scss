@@ -1,0 +1,25 @@
+.skeleton-card {
+  height: 320px;
+  border-radius: 12px;
+  background: #eee;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  &::before {
+    content: "";
+    height: 250px;
+    background: linear-gradient(90deg, #eee 25%, #ddd 37%, #eee 63%);
+    animation: loading 1.4s infinite;
+  }
+
+  &::after {
+    content: "";
+    flex: 1;
+    margin: 10px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #eee 25%, #ddd 37%, #eee 63%);
+    animation: loading 1.4s infinite;
+  }
+}

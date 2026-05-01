@@ -3,31 +3,48 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: var(--bg-dark, #16171d);
-  border-bottom: 1px solid var(--border-color, #2e303a);
+  background-color: var(--bg-main);
+  border-bottom: 1px solid var(--border-color);
 
   .logo a {
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--accent, #aa3bff);
+    color: var(--accent);
     text-decoration: none;
   }
 
   .navLinks {
     display: flex;
     gap: 1.5rem;
+    align-items: center;
     list-style: none;
     margin: 0;
     padding: 0;
 
     a {
-      color: var(--text-main, #f3f4f6);
+      color: var(--text-main);
       text-decoration: none;
       transition: color 0.3s ease;
 
       &:hover {
-        color: var(--accent-hover, #c084fc);
+        color: var(--accent-hover);
       }
+    }
+  }
+
+  .themeToggle {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: var(--card-bg);
+      border-color: var(--accent);
     }
   }
 
@@ -39,6 +56,7 @@
     .navLinks {
       width: 100%;
       justify-content: space-around;
+      flex-wrap: wrap;
     }
   }
 }

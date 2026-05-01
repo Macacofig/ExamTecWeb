@@ -1,3 +1,29 @@
+:root {
+  --bg-main: #16171d;
+  --card-bg: #1f2028;
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+  --border-color: #2e303a;
+  --accent: #aa3bff;
+  --accent-hover: #c084fc;
+}
+
+[data-theme='light'] {
+  --bg-main: #f3f4f6;
+  --card-bg: #ffffff;
+  --text-main: #111827;
+  --text-muted: #4b5563;
+  --border-color: #d1d5db;
+  --accent: #8b5cf6;
+  --accent-hover: #7c3aed;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -6,4 +32,29 @@
 
 .book-card {
   cursor: pointer;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+
+  button {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: #333;
+    color: white;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+  span {
+    align-self: center;
+  }
 }
