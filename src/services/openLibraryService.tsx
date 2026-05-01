@@ -1,7 +1,6 @@
 import { Result } from "@/types/Result";
 import { book } from "@/types/book";
 import { mapToBooks } from "@/utils/bookMapper";
-import { filterByLanguage, filterByPublicationYear } from "@/utils/filters";
 
 type SearchParams = {
   query?: string;
@@ -22,7 +21,7 @@ function buildSearchURL(params: SearchParams): string {
   if (params.title) searchParams.append("title", params.title);
   if (params.author) searchParams.append("author", params.author);
 
-  return `/api/openlibrary/search.json?${searchParams.toString()}`;
+  return `https://openlibrary.org/search.json?${searchParams.toString()}`;
 }
 
 function buildAdvancedSearchURL(params: AdvancedSearchParams): string {
@@ -39,7 +38,7 @@ function buildAdvancedSearchURL(params: AdvancedSearchParams): string {
     searchParams.append("sort", params.orderBy === 'year' ? 'first_publish_year' : 'editions');
   }
 
-  return `/api/openlibrary/search.json?${searchParams.toString()}`;
+  return `https://openlibrary.org/search.json?${searchParams.toString()}`;
 }
 
 export async function searchBooks(params: SearchParams): Promise<Result<book[]>> {
@@ -50,8 +49,6 @@ export async function searchBooks(params: SearchParams): Promise<Result<book[]>>
   }
 
   const url = buildSearchURL(params);
-
-  console.log("Fetching URL:", url); // Debug log to check the URL being fetched
 
   const response = await fetch(url);
 

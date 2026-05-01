@@ -8,12 +8,12 @@ interface FilterPanelProps {
 }
 
 export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
-    const [year, setYear] = useState('1900');
+    const [year, setYear] = useState('');
 
     const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setYear(value);
-        onFilterChange({ minYear: value });
+        onFilterChange({ minYear: value || undefined });
     };
 
     return (
@@ -29,7 +29,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
 
             <div className={styles.filterGroup}>
                 <label>Idioma</label>
-                <select onChange={(e) => onFilterChange({ language: e.target.value })}>
+                <select onChange={(e) => onFilterChange({ language: e.target.value || undefined })}>
                     <option value="">Todos</option>
                     <option value="eng">Inglés</option>
                     <option value="spa">Español</option>
@@ -39,7 +39,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
 
             <div className={styles.filterGroup}>
                 <label>Ordenar por</label>
-                <select onChange={(e) => onFilterChange({ sort: e.target.value })}>
+                <select onChange={(e) => onFilterChange({ sort: e.target.value || 'editions' })}>
                     <option value="editions">Ediciones</option>
                     <option value="year">Año de publicación</option>
                 </select>
