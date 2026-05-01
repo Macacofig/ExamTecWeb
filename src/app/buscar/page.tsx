@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { book } from "@/types/book";
 import { searchBooks, advancedSearch } from "@/services/openLibraryService";
-import BookList from "@/components/ListBooks";
+import BookList from "@/components/ListBooks/ListBooks";
 import FilterPanel from "@/components/FilterPanel/FilterPanel";
 import Loading from "@/components/Loading/Loading";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
