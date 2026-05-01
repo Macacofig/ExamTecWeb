@@ -6,6 +6,7 @@ type SearchParams = {
   query?: string;
   title?: string;
   author?: string;
+  page?: number; 
 };
 
 type AdvancedSearchParams = SearchParams & {
@@ -20,6 +21,7 @@ function buildSearchURL(params: SearchParams): string {
   if (params.query) searchParams.append("q", params.query);
   if (params.title) searchParams.append("title", params.title);
   if (params.author) searchParams.append("author", params.author);
+  if (params.page) searchParams.append("page", params.page.toString());
 
   return `https://openlibrary.org/search.json?${searchParams.toString()}`;
 }
@@ -32,6 +34,7 @@ function buildAdvancedSearchURL(params: AdvancedSearchParams): string {
   if (params.author) searchParams.append("author", params.author);
   if (params.language) searchParams.append("lang", params.language);
   if (params.minYear) searchParams.append("first_publish_year", params.minYear.toString());
+  if (params.page) searchParams.append("page", params.page.toString());
   if (params.orderBy) {
     // Open Library supports sorting by relevance, editions, etc.
     // For simplicity, we'll use 'relevance' as default, but can add more
@@ -42,7 +45,9 @@ function buildAdvancedSearchURL(params: AdvancedSearchParams): string {
 }
 
 export async function searchBooks(params: SearchParams): Promise<Result<book[]>> {
-  const hasParams = Object.values(params).some(v => v && v.trim());
+  const hasParams = Object.values(params).some(
+    v => typeof v === "string" ? v.trim() : v
+  );
 
   if (!hasParams) {
     return Result.success([]);
